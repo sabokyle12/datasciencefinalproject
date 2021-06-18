@@ -11,18 +11,36 @@ library(tidyverse)
 ```
 
 ```{r}
-speedData <- read.csv("sprint_speed.csv")
-speedData
-hittingData <- read.csv("expected_stats.csv")
-hittingData
+speedData <- read.csv("sprint_speed2021.csv")
+hittingData <- read.csv("expected_stats2021.csv")
 rawData <- full_join(hittingData, speedData, by = "player_id")
-rawData <- rawData %>%
+rawData2021 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  select(player_id, woba_diff, ba_diff, slg_diff)
+  select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed)
+rawData2021
+
+speedData <- read.csv("sprint_speed2019.csv")
+hittingData <- read.csv("expected_stats2019.csv")
+rawData <- full_join(hittingData, speedData, by = "player_id")
+rawData2019 <- rawData %>%
+  rename(woba_diff = est_woba_minus_woba_diff, 
+         ba_diff = est_ba_minus_ba_diff, 
+         slg_diff = est_slg_minus_slg_diff) %>%
+  select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed)
+rawData2019
 ```
 ```{r}
-
+ggplot(data = rawData2021, 
+       mapping = aes(x = sprint_speed, y = woba_diff)) +
+  geom_point() +
+  geom_smooth(color = "red")
+```
+```{r}
+ggplot(data = rawData2019, 
+       mapping = aes(x = sprint_speed, y = woba_diff)) +
+  geom_point() +
+  geom_smooth(color = "red")
 ```
 

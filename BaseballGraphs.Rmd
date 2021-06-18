@@ -1,0 +1,19 @@
+---
+title: "BaseballGraphs"
+author: "Kyle Sabo"
+date: "6/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+```{r}
+speedData <- read.csv("sprint_speed.csv")
+speedData
+hittingData <- read.csv("expected_stats.csv")
+hittingData
+```
+

@@ -15,5 +15,14 @@ speedData <- read.csv("sprint_speed.csv")
 speedData
 hittingData <- read.csv("expected_stats.csv")
 hittingData
+rawData <- full_join(hittingData, speedData, by = "player_id")
+rawData <- rawData %>%
+  rename(woba_diff = est_woba_minus_woba_diff, 
+         ba_diff = est_ba_minus_ba_diff, 
+         slg_diff = est_slg_minus_slg_diff) %>%
+  select(player_id, woba_diff, ba_diff, slg_diff)
+```
+```{r}
+
 ```
 

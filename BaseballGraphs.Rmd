@@ -1,7 +1,7 @@
 ---
-title: "BaseballGraphs"
+title: "How Speed Affects Offensive Ability"
 author: "Kyle Sabo"
-date: "6/18/2021"
+date: ""
 output: html_document
 ---
 
@@ -99,9 +99,6 @@ rawData2015 <- rawData %>%
 rawData2015
 
 totalData <- rbind(rawData2015,rawData2016,rawData2017,rawData2018,rawData2019,rawData2020,rawData2021)
-```
-```{r}
-totalData
 ```
 
 ```{r}

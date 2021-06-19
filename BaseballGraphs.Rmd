@@ -18,7 +18,7 @@ rawData2021 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2021) %>%
+  mutate(year = "Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>% 
   drop_na()
 rawData2021
@@ -31,7 +31,7 @@ rawData2020 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2020) %>%
+  mutate(year = "Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>% 
   drop_na()
 rawData2020
@@ -44,7 +44,7 @@ rawData2019 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2019) %>%
+  mutate(year = "Not Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>% 
   drop_na()
 rawData2019
@@ -57,7 +57,7 @@ rawData2018 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2018) %>%
+  mutate(year = "Not Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>%  
   drop_na()
 rawData2018
@@ -69,7 +69,7 @@ rawData2017 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2017) %>%
+  mutate(year = "Not Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>% 
   drop_na()
 rawData2017
@@ -81,7 +81,7 @@ rawData2016 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2016) %>%
+  mutate(year = "Not Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>% 
   drop_na()
 rawData2016
@@ -93,39 +93,104 @@ rawData2015 <- rawData %>%
   rename(woba_diff = est_woba_minus_woba_diff, 
          ba_diff = est_ba_minus_ba_diff, 
          slg_diff = est_slg_minus_slg_diff) %>%
-  mutate(year = 2015) %>%
+  mutate(year = "Not Adjusted") %>%
   select(player_id, woba_diff, ba_diff, slg_diff, sprint_speed, year) %>%  
   drop_na()
 rawData2015
 
 totalData <- rbind(rawData2015,rawData2016,rawData2017,rawData2018,rawData2019,rawData2020,rawData2021)
+dataNoAdjustment <- rbind(rawData2015,rawData2016,rawData2017,rawData2018,rawData2019)
+dataAfterAdjustment <- rbind(rawData2020,rawData2021)
 ```
 
 ```{r}
 ggplot(data = totalData, 
-       mapping = aes(x = sprint_speed, y = woba_diff)) +
+       mapping = aes(x = sprint_speed, y = woba_diff, color = year)) +
   geom_point(alpha = 0.2) +
-  geom_smooth(method = "loess", formula = "y ~ x", color = "red") +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  facet_wrap(~year) +
   labs(title = "2015-2021 Sprint Speed vs xwOBA difference",
-       subtitle = "The faster a player is, the more likely they outperform their 'expected' hitting.",
+       subtitle = "The faster a player was when xwOBA did not account for speed (2015-2019), the more likely they\noutperformed their 'expected' hitting. However, it is now adjusted and is much closer for all speeds,\nalthough faster players still may outperform more often.",
        x = "Sprint Speed (m/s)",
        y = "xwOBA difference (positive means they 'overperformed')",
        caption = "Source: baseballsavant.mlb.com")
 ggplot(data = totalData, 
-       mapping = aes(x = sprint_speed, y = ba_diff)) +
+       mapping = aes(x = sprint_speed, y = ba_diff, color = year)) +
   geom_point(alpha = 0.2) +
-  geom_smooth(method = "loess", formula = "y ~ x", color = "red") +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  facet_wrap(~year) +
   labs(title = "2015-2021 Sprint Speed vs xBA difference",
-       subtitle = "The faster a player is, the more likely they outperform their 'expected' hitting.",
+       subtitle = "The faster a player was when xwOBA did not account for speed, the more likely they outperform\ntheir 'expected' hitting. However, it is now adjusted and is about equal for all speeds, although\nfaster players still may outperform more often.",
        x = "Sprint Speed (m/s)",
        y = "xBA difference (positive means they 'overperformed')",
        caption = "Source: baseballsavant.mlb.com")
 ggplot(data = totalData, 
+       mapping = aes(x = sprint_speed, y = slg_diff, color = year)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  facet_wrap(~year) +
+  labs(title = "2015-2021 Sprint Speed vs xSLG difference",
+       subtitle = "The faster a player was when xwOBA did not account for speed, the more likely they outperform\ntheir 'expected' hitting. However, it is now adjusted and is about equal for all speeds, although\nfaster players still may outperform more often.",
+       x = "Sprint Speed (m/s)",
+       y = "xSLG difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+```
+
+```{r}
+ggplot(data = dataNoAdjustment, 
+       mapping = aes(x = sprint_speed, y = woba_diff)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2015-2019 Sprint Speed vs xwOBA difference",
+       subtitle = "The faster a player is, the more likely they outperform their 'expected' hitting.",
+       x = "Sprint Speed (m/s)",
+       y = "xwOBA difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+ggplot(data = dataNoAdjustment, 
+       mapping = aes(x = sprint_speed, y = ba_diff)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2015-2019 Sprint Speed vs xBA difference",
+       subtitle = "The faster a player is, the more likely they outperform their 'expected' hitting.",
+       x = "Sprint Speed (m/s)",
+       y = "xBA difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+ggplot(data = dataNoAdjustment, 
        mapping = aes(x = sprint_speed, y = slg_diff)) +
   geom_point(alpha = 0.2) +
-  geom_smooth(method = "loess", formula = "y ~ x", color = "red") +
-  labs(title = "2015-2021 Sprint Speed vs xSLG difference",
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2015-2019 Sprint Speed vs xSLG difference",
        subtitle = "The faster a player is, the more likely they outperform their 'expected' hitting.",
+       x = "Sprint Speed (m/s)",
+       y = "xSLG difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+```
+
+```{r}
+ggplot(data = dataAfterAdjustment, 
+       mapping = aes(x = sprint_speed, y = woba_diff)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2020-2021 Sprint Speed vs xwOBA difference",
+       subtitle = "Players with higher speed no longer outperform their expected hitting as it is adjusted to speed.",
+       x = "Sprint Speed (m/s)",
+       y = "xwOBA difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+ggplot(data = dataAfterAdjustment, 
+       mapping = aes(x = sprint_speed, y = ba_diff)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2020-2021 Sprint Speed vs xBA difference",
+       subtitle = "Players with higher speed no longer outperform their expected hitting as it is adjusted to speed..",
+       x = "Sprint Speed (m/s)",
+       y = "xBA difference (positive means they 'overperformed')",
+       caption = "Source: baseballsavant.mlb.com")
+ggplot(data = dataAfterAdjustment, 
+       mapping = aes(x = sprint_speed, y = slg_diff)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
+  labs(title = "2020-2021 Sprint Speed vs xSLG difference",
+       subtitle = "Players with higher speed no longer outperform their expected hitting as it is adjusted to speed.",
        x = "Sprint Speed (m/s)",
        y = "xSLG difference (positive means they 'overperformed')",
        caption = "Source: baseballsavant.mlb.com")
@@ -135,7 +200,7 @@ ggplot(data = totalData,
 ggplot(data = rawData2021, 
        mapping = aes(x = sprint_speed, y = woba_diff)) +
   geom_point() +
-  geom_smooth(method = "loess", formula = "y ~ x", color = "red") +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
   labs(title = "2021 Sprint Speed vs xwOBA difference",
        subtitle = "The fastest hitters were more unlucky, but above average runners had a higher xwOBA difference.",
        x = "Sprint Speed (m/s)",
@@ -144,7 +209,7 @@ ggplot(data = rawData2021,
 ggplot(data = rawData2021, 
        mapping = aes(x = sprint_speed, y = ba_diff)) +
   geom_point() +
-  geom_smooth(method = "loess", formula = "y ~ x", color = "red") +
+  geom_smooth(method = "lm", formula = "y ~ x", color = "red", se = FALSE) +
   labs(title = "2021 Sprint Speed vs xBA difference",
        subtitle = "The fastest hitters were more unlucky, but above average runners had a higher xwOBA difference.",
        x = "Sprint Speed (m/s)",
